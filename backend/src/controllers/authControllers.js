@@ -3,6 +3,7 @@ import userModel from "../model/user.model.js"
 import bcrypt from "bcryptjs";
 import cloudinary from "../config/cloudinary.js";
 import transporter from "../config/nodeMailer.js";
+import { sendEmail } from "../config/nodeMailer.js";
 
 
 // this function is used to send otp for a new user.
@@ -11,12 +12,16 @@ export const sendOtpForRegister = async (req, res) => {
     const { fullName, email, password, profilePic } = req.body;
 
     if (!fullName || !email || !password) {
-      return res.status(400).json({ success: false, message: "All fields are mandatory" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are mandatory" });
     }
 
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
     }
 
     // generate OTP
@@ -27,29 +32,37 @@ export const sendOtpForRegister = async (req, res) => {
     const newUser = new userModel({
       email,
       fullName,
-      password, // will hash later only after otp verification
+      password,
       profilePic: profilePic || "",
       verifyOtp: otp,
       verifyOtpExpireAt: otpExpire,
     });
+
     await newUser.save();
 
-    // send OTP email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    // send OTP using Brevo API
+    await sendEmail({
       to: email,
       subject: "Email Verification OTP",
-      html: `<h2>Welcome ${fullName}</h2>
-             <p>Your OTP is: <b>${otp}</b></p>
-             <p>It is valid for 10 minutes.</p>`,
-    };
+      html: `
+        <div style="font-family: Arial; padding:20px;">
+          <h2>Welcome ${fullName}</h2>
+          <p>Your OTP is:</p>
+          <h1 style="letter-spacing:3px;">${otp}</h1>
+          <p>This OTP is valid for 10 minutes.</p>
+        </div>
+      `,
+    });
 
-    await transporter.sendMail(mailOptions);
-
-    return res.json({ success: true, message: "OTP sent to email. Please verify." });
+    return res.json({
+      success: true,
+      message: "OTP sent to email. Please verify.",
+    });
   } catch (error) {
     console.error("OTP Error:", error);
-    return res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to send OTP" });
   }
 };
 
@@ -92,6 +105,8 @@ export const verifyOtpAndRegister = async (req, res) => {
 
 //this is login function 
 export const login=async(req,res)=>{
+    console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS exists:", !!process.env.SMTP_PASS);
   const {email,password}=req.body;
   try{
     const user=await userModel.findOne({email:email});
