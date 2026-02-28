@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center">
 
       {/* ===== Background Glow ===== */}
       <motion.div
@@ -12,8 +12,8 @@ const AuthLayout = ({ children }) => {
         className="absolute w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
       />
 
-      {/* ===== Top Branding Section ===== */}
-      <div className="absolute top-16 left-0 w-full flex flex-col items-center z-20 text-center px-4">
+      {/* ===== Branding Section ===== */}
+      <div className="relative z-20 flex flex-col items-center text-center px-4 pt-16">
 
         {/* Glass Brand Container */}
         <motion.div
@@ -21,7 +21,7 @@ const AuthLayout = ({ children }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="
-            px-14 py-5
+            px-12 py-4
             rounded-2xl
             backdrop-blur-2xl
             bg-white/5
@@ -29,7 +29,7 @@ const AuthLayout = ({ children }) => {
             shadow-[0_20px_60px_rgba(0,0,0,0.45)]
           "
         >
-          <h1 className="text-4xl tracking-[8px] font-semibold text-slate-100">
+          <h1 className="text-3xl md:text-4xl tracking-[6px] font-semibold text-slate-100">
             ARTHAVYA
           </h1>
         </motion.div>
@@ -39,17 +39,16 @@ const AuthLayout = ({ children }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="mt-6 text-lg text-slate-300 max-w-2xl leading-relaxed"
+          className="mt-5 text-base md:text-lg text-slate-300 max-w-2xl leading-relaxed"
         >
           Smart financial tracking built for clarity and control.
           <br />
           Designed to simplify the way you manage your money.
         </motion.p>
-
       </div>
 
-      {/* ===== Centered Form Content ===== */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-48">
+      {/* ===== Form Section ===== */}
+      <div className="relative z-10 w-full flex-1 flex items-start md:items-center justify-center px-6 mt-12 md:mt-16 pb-16">
         {children}
       </div>
 

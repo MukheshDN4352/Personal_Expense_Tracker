@@ -3,27 +3,22 @@ import AuthLayout from "../../components/layouts/AuthLayout";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { validateEmail } from "../../utils/helper.js";
-import ProfilePhotoSelector from "../../components/Inputs/ProfilePhotoSelector.jsx";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 
 const Signup = () => {
   const navigate = useNavigate();
-
   const { sendOtp, verifyOtp, isSendingOtp, isVerifyingOtp } =
     useAuthStore();
 
   // ================= STATES =================
-  const [profilePic, setProfilePic] = useState(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
-  // OTP state
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputsRef = useRef([]);
 
@@ -39,14 +34,22 @@ const Signup = () => {
     setError("");
 
     try {
-      await sendOtp({ fullName, email, password });
-      setOtpSent(true);
+      const res = await sendOtp({ fullName, email, password });
+
+      // Only open OTP section if success
+      if (res?.success) {
+        setOtpSent(true);
+      }
     } catch (err) {
-      setError("Failed to send OTP "+err);
+      setError(
+        err?.response?.data?.message ||
+          "User already exists"
+      );
+      setOtpSent(false); // Prevent OTP section opening
     }
   };
 
-  // ================= OTP HANDLING =================
+  // ================= OTP INPUT =================
   const handleOtpChange = (element, index) => {
     if (!/^[0-9]?$/.test(element.value)) return;
 
@@ -54,14 +57,12 @@ const Signup = () => {
     newOtp[index] = element.value;
     setOtp(newOtp);
 
-    // Move to next
     if (element.value && index < 5) {
       inputsRef.current[index + 1].focus();
     }
   };
 
   const handleKeyDown = (e, index) => {
-    // Backspace move to previous
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1].focus();
     }
@@ -77,8 +78,6 @@ const Signup = () => {
     newOtp.forEach((digit, index) => {
       inputsRef.current[index].value = digit;
     });
-
-    inputsRef.current[5].focus();
   };
 
   // ================= VERIFY OTP =================
@@ -91,39 +90,37 @@ const Signup = () => {
     setError("");
 
     try {
-      await verifyOtp({
+      const res = await verifyOtp({
         email,
         otp: enteredOtp,
         password,
       });
 
-      navigate("/dashboard");
+      if (res?.success) {
+        navigate("/dashboard");
+      }
     } catch (err) {
-      setError("Invalid OTP. Please try again.");
+      // Stay on same page
+      setError("Invalid OTP. Please re-enter.");
+      setOtp(new Array(6).fill(""));
+      inputsRef.current[0]?.focus();
     }
   };
 
   return (
     <AuthLayout>
       <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-lg glass p-8"
+        className="w-full max-w-lg glass p-8 space-y-6"
       >
         <h3 className="text-2xl font-semibold text-slate-100 text-center">
           Create Account
         </h3>
 
+        {/* ================= FORM ================= */}
         <form className="space-y-6">
-
-          {/* Profile Photo */}
-          {/* <div className="flex justify-center">
-            <ProfilePhotoSelector
-              image={profilePic}
-              setImage={setProfilePic}
-            />
-          </div> */}
 
           {/* Full Name */}
           <div>
@@ -179,34 +176,24 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* SEND OTP BUTTON */}
+          {/* SEND OTP */}
           {!otpSent && (
-<motion.button
-  whileTap={{ scale: 0.96 }}
-  type="button"
-  onClick={handleSendOtp}
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    e.currentTarget.style.setProperty("--x", `${x}px`);
-    e.currentTarget.style.setProperty("--y", `${y}px`);
-  }}
-  disabled={isSendingOtp}
-  className="
-    liquid-glass-btn
-    liquid-blue
-    w-full
-    py-3
-  "
->
-  {isSendingOtp ? "Sending OTP..." : "Send OTP"}
-</motion.button>
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              type="button"
+              onClick={handleSendOtp}
+              disabled={isSendingOtp}
+              className="liquid-glass-btn liquid-blue w-full py-3"
+            >
+              {isSendingOtp
+                ? "Sending OTP..."
+                : "Send OTP"}
+            </motion.button>
           )}
 
           {/* OTP SECTION */}
           {otpSent && (
-            <>
+            <div className="space-y-6 pt-4">
               <div
                 className="flex justify-between gap-2"
                 onPaste={handlePaste}
@@ -217,49 +204,41 @@ const Signup = () => {
                     type="text"
                     maxLength="1"
                     value={data}
-                    ref={(el) => (inputsRef.current[index] = el)}
+                    ref={(el) =>
+                      (inputsRef.current[index] = el)
+                    }
                     onChange={(e) =>
                       handleOtpChange(e.target, index)
                     }
                     onKeyDown={(e) =>
                       handleKeyDown(e, index)
                     }
-                    className="w-12 h-12 text-center text-xl rounded-lg bg-slate-800 text-white"
+                    className="w-12 h-12 text-center text-xl rounded-lg bg-slate-800 text-white border border-slate-700 focus:border-blue-400 outline-none"
                   />
                 ))}
               </div>
 
-      <motion.button
-  whileTap={{ scale: 0.96 }}
-  type="button"
-  onClick={handleVerifyOtp}
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    e.currentTarget.style.setProperty("--x", `${x}px`);
-    e.currentTarget.style.setProperty("--y", `${y}px`);
-  }}
-  disabled={isVerifyingOtp}
-  className="
-    liquid-glass-btn
-    liquid-green
-    w-full
-    py-3
-  "
->
-  {isVerifyingOtp ? "Verifying..." : "Verify OTP"}
-</motion.button>
-            </>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                type="button"
+                onClick={handleVerifyOtp}
+                disabled={isVerifyingOtp}
+                className="liquid-glass-btn liquid-green w-full py-3"
+              >
+                {isVerifyingOtp
+                  ? "Verifying..."
+                  : "Verify OTP"}
+              </motion.button>
+            </div>
           )}
 
           {error && (
-            <p className="text-red-400 text-sm">
+            <p className="text-red-400 text-sm text-center">
               {error}
             </p>
           )}
 
-          <p className="text-sm text-slate-300 text-center mt-6">
+          <p className="text-sm text-slate-300 text-center">
             Already have an account?{" "}
             <Link
               to="/login"
