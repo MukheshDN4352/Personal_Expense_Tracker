@@ -41,14 +41,14 @@ app.use("/api/expense", expenseRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/budgetCycle", budgetCycleRoutes);
 
-const rootPath = process.cwd();
 
-app.use(express.static(path.join(rootPath, "frontend/dist")));
 
+
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(rootPath, "frontend/dist/index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
-
 
 
 // ✅ Start Server
