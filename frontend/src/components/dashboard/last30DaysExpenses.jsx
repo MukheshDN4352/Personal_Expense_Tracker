@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { prepareExpenseBarChartData } from "../../utils/helper";
-import CustomBarChart from "../Charts/CustomBarchart";
+import Barchart from "../Charts/Barchart";
 
 const Last30DaysExpenses = ({ data }) => {
   const [chartData, setChartData] = useState([]);
@@ -33,7 +33,7 @@ const Last30DaysExpenses = ({ data }) => {
         </h5>
       </div>
 
-      <CustomBarChart
+      <Barchart
         data={chartData}
         xAxisKey="category"
         barKey="amount"
