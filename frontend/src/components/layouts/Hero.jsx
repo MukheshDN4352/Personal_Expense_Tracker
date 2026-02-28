@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import SideMenu from "./SideMenu";
 
-const NavBar = ({ activeMenu }) => {
+const Hero= ({ activeMenu }) => {
   const [openSideMenu, setOpenSideMenu] = useState(false);
 
   return (
@@ -70,4 +70,4 @@ const NavBar = ({ activeMenu }) => {
   );
 };
 
-export default NavBar;
+export default Hero;
