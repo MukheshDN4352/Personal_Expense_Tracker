@@ -41,7 +41,7 @@ const Signup = () => {
       console.log( response);
 
       // VERY IMPORTANT CHECK
-      if (response.success===true) {
+      if (response.data.success===true) {
         setOtpSent(true);
       } else {
         setOtpSent(false);
