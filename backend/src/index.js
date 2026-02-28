@@ -52,10 +52,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Test Route
-app.get("/", (req, res) => {
-  res.send("Hello from backend");
-});
+
 
 // ✅ Start Server
 app.listen(PORT, () => {
