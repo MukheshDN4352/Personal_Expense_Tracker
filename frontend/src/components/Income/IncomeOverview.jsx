@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
-import CustomBarChart from "../Charts/CustomBarchart";
+import Barchart from "../Charts/Barchart";
 import { prepareIncomeBarchartData } from "../../utils/helper";
 
 const IncomeOverview = ({ transactions, onAddIncome }) => {
@@ -64,7 +64,7 @@ const IncomeOverview = ({ transactions, onAddIncome }) => {
 
       {/* Chart */}
       <div className="mt-12 relative z-10">
-        <CustomBarChart
+        <Barchart 
           data={chartData}
           xAxisKey="source"
           barKey="amount"

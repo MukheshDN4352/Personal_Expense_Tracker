@@ -53,7 +53,7 @@ const GlassTooltip = ({ active, payload }) => {
   return null;
 };
 
-const CustomBarChart = ({
+const Barchart= ({
   data = [],
   xAxisKey = "month",
   barKey = "amount",
@@ -119,4 +119,4 @@ const CustomBarChart = ({
   );
 };
 
-export default CustomBarChart;
+export default Barchart;
