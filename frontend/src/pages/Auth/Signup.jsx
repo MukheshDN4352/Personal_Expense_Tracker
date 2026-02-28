@@ -11,7 +11,6 @@ const Signup = () => {
   const { sendOtp, verifyOtp, isSendingOtp, isVerifyingOtp } =
     useAuthStore();
 
-  // ================= STATES =================
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,22 +33,29 @@ const Signup = () => {
     setError("");
 
     try {
-      const res = await sendOtp({ fullName, email, password });
+      const response = await sendOtp({
+        fullName,
+        email,
+        password,
+      });
 
-      // Only open OTP section if success
-      if (res?.success) {
+      // VERY IMPORTANT CHECK
+      if (response && response.success) {
         setOtpSent(true);
+      } else {
+        setOtpSent(false);
+        setError(response?.message || "Failed to send OTP");
       }
     } catch (err) {
+      setOtpSent(false);
       setError(
         err?.response?.data?.message ||
-          "User already exists"
+          "User already exists or invalid email"
       );
-      setOtpSent(false); // Prevent OTP section opening
     }
   };
 
-  // ================= OTP INPUT =================
+  // ================= OTP HANDLING =================
   const handleOtpChange = (element, index) => {
     if (!/^[0-9]?$/.test(element.value)) return;
 
@@ -90,18 +96,21 @@ const Signup = () => {
     setError("");
 
     try {
-      const res = await verifyOtp({
+      const response = await verifyOtp({
         email,
         otp: enteredOtp,
         password,
       });
 
-      if (res?.success) {
+      if (response && response.success) {
         navigate("/dashboard");
+      } else {
+        setError("Invalid OTP. Please try again.");
+        setOtp(new Array(6).fill(""));
+        inputsRef.current[0]?.focus();
       }
     } catch (err) {
-      // Stay on same page
-      setError("Invalid OTP. Please re-enter.");
+      setError("Invalid OTP. Please try again.");
       setOtp(new Array(6).fill(""));
       inputsRef.current[0]?.focus();
     }
@@ -119,7 +128,6 @@ const Signup = () => {
           Create Account
         </h3>
 
-        {/* ================= FORM ================= */}
         <form className="space-y-6">
 
           {/* Full Name */}
@@ -176,7 +184,7 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* SEND OTP */}
+          {/* SEND OTP BUTTON */}
           {!otpSent && (
             <motion.button
               whileTap={{ scale: 0.96 }}
