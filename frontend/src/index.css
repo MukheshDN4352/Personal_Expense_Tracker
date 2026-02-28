@@ -1,0 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+  --font-display: "Outfit", sans-serif;
+
+  /* Professional Fintech Palette */
+  --color-bg-primary: #0f172a;
+  --color-glass: rgba(255, 255, 255, 0.06);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+
+  --color-income: #10b981;
+  --color-expense: #f43f5e;
+  --color-accent: #3b82f6;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+  }
+
+  body {
+    background: radial-gradient(
+        circle at 20% 20%,
+        rgba(59, 130, 246, 0.15),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 80% 0%,
+        rgba(16, 185, 129, 0.12),
+        transparent 40%
+      ),
+      var(--color-bg-primary);
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+  }
+}
+
+/* Glass Card */
+.glass {
+  @apply backdrop-blur-2xl
+        bg-black/10
+         border border-slate-200
+         rounded-2xl;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.06),
+    inset 0 1px 1px rgba(255,255,255,0.7);
+}
+
+/* Glass Hover */
+.glass-hover {
+  @apply hover:bg-white/10 transition-all duration-300 ease-out;
+}
+
+/* Smooth Button */
+.btn-liquid {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20 
+         text-white font-medium rounded-xl px-4 py-2
+         transition-all duration-300 ease-out
+         hover:bg-white/20 active:scale-95;
+}
+
+/* Input Glass */
+.input-liquid {
+  @apply w-full bg-white/5 border border-white/10
+         backdrop-blur-lg rounded-xl px-4 py-3
+         text-white placeholder:text-slate-400
+         focus:outline-none focus:border-blue-400
+         transition-all duration-300;
+}
+
+/* ================= BASE GLASS BUTTON ================= */
+
+.liquid-glass-btn {
+  position: relative;
+  overflow: hidden;            /* VERY IMPORTANT */
+  border-radius: 14px;
+  isolation: isolate;          /* Prevent blending issues */
+
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+
+  transition: all 0.4s cubic-bezier(.22,1,.36,1);
+  font-weight: 500;
+  color: white;
+  z-index: 0;
+}
+
+/* Cursor light effect */
+.liquid-glass-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    var(--light-color),
+    transparent 60%
+  );
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Subtle shine sweep (contained inside button) */
+.liquid-glass-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 50%;
+  height: 100%;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    120deg,
+    rgba(255,255,255,0.5),
+    transparent
+  );
+
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+/* Hover effects */
+.liquid-glass-btn:hover::before {
+  opacity: 1;
+}
+
+.liquid-glass-btn:hover::after {
+  left: 120%;
+}
+
+.liquid-glass-btn:active {
+  transform: scale(0.96);
+}
+
+/* ================= BLUE BUTTON ================= */
+
+.liquid-blue {
+  --light-color: rgba(80,160,255,0.35);
+
+  background: linear-gradient(
+    145deg,
+    rgba(59,130,246,0.35),
+    rgba(37,99,235,0.25)
+  );
+
+  border: 1px solid rgba(96,165,250,0.4);
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.3),
+    0 8px 25px rgba(59,130,246,0.25);
+}
+
+.liquid-blue:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.5),
+    0 12px 35px rgba(59,130,246,0.4);
+}
+
+/* ================= GREEN BUTTON ================= */
+
+.liquid-green {
+  --light-color: rgba(34,197,94,0.35);
+
+  background: linear-gradient(
+    145deg,
+    rgba(34,197,94,0.35),
+    rgba(21,128,61,0.25)
+  );
+
+  border: 1px solid rgba(74,222,128,0.4);
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.3),
+    0 8px 25px rgba(34,197,94,0.25);
+}
+
+.liquid-green:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.5),
+    0 12px 35px rgba(34,197,94,0.4);
+}
+
+/* Disabled */
+.liquid-glass-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+
+@keyframes premiumFade {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-premiumFade {
+  animation: premiumFade 0.18s ease-out;
+}
+
+.rdp {
+  background: transparent;
+  color: white;
+  --rdp-cell-size: 40px;
+}
+
+.rdp-day_selected {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-radius: 14px;
+  box-shadow: 0 0 18px rgba(255,255,255,0.35);
+}
+
+.rdp-day:hover {
+  background: rgba(255,255,255,0.1);
+  border-radius: 14px;
+}
+
+.rdp-day_disabled {
+  opacity: 0.25;
+}
