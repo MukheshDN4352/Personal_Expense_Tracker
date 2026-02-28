@@ -45,8 +45,10 @@ export const useAuthStore = create((set) => ({
     set({ isSendingOtp: true });
     try {
       const res = await axiosInstance.post("/auth/send-otp", data);
+      
 
       showGlassToast(res.data.message || "OTP sent successfully", "success");
+      return res.data;
     } catch (error) {
      showGlassToast(
   error.response?.data?.message || "Failed to send OTP",

@@ -38,7 +38,7 @@ const Signup = () => {
         email,
         password,
       });
-      console.log( response);
+   
 
       // VERY IMPORTANT CHECK
       if (response.data.success===true) {
