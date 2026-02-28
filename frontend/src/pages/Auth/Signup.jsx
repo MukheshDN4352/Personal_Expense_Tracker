@@ -38,9 +38,10 @@ const Signup = () => {
         email,
         password,
       });
+      console.log( response);
 
       // VERY IMPORTANT CHECK
-      if (response && response.success) {
+      if (response.success===true) {
         setOtpSent(true);
       } else {
         setOtpSent(false);
