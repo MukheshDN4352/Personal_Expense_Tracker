@@ -2,7 +2,6 @@ import { generateToken } from "../config/util.js";
 import userModel from "../model/user.model.js"
 import bcrypt from "bcryptjs";
 import cloudinary from "../config/cloudinary.js";
-import transporter from "../config/nodeMailer.js";
 import { sendEmail } from "../config/nodeMailer.js";
 
 
