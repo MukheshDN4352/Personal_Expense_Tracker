@@ -36,24 +36,6 @@ The application allows users to track their financial activities, visualize spen
 **Database**
 - MongoDB
 
----
-
-## Project Structure
-Personal_Expense_Tracker
-│
-├── backend
-│ ├── config
-│ ├── controllers
-│ ├── models
-│ └── routes
-│
-├── frontend
-│ ├── src
-│ ├── components
-│ └── pages
-│
-├── package.json
-└── .gitignore
 
 
 ---
